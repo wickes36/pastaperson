@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mutti Recipe Builder</title>
+    <title>Mutti Recipe Inspiration</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,12 @@
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
         }
         .loader {
-            border-top-color: var(--mutti-red);
+            border-radius: 50%;
+            /* Creates a spinning gradient from Mutti red to light grey */
+            background: conic-gradient(from 180deg at 50% 50%, #e5e7eb, var(--mutti-red));
+            /* Use a mask to cut out the center, creating a ring effect (12px thick) */
+            -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 12px), #000 0);
+            mask: radial-gradient(farthest-side, #0000 calc(100% - 12px), #000 0);
             animation: spin 1s linear infinite;
         }
         @keyframes spin {
@@ -121,7 +126,7 @@
         <div id="results-section" class="mt-12 hidden">
             <h2 class="text-3xl font-black text-center mb-8 mutti-red-text">Your Recipe Inspiration</h2>
             <div id="loader" class="flex justify-center items-center py-10 hidden">
-                <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
+                <div class="loader h-32 w-32"></div>
             </div>
             <div id="recipe-output" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
              <div id="error-message" class="hidden text-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mt-6" role="alert">
