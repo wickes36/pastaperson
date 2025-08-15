@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutti Recipe Inspiration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mutti-red: #d42c23;
+            --mutti-cream: #f9f7f4;
+            --mutti-dark: #3a3a3a;
+        }
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--mutti-cream);
+            color: var(--mutti-dark);
+        }
+        .mutti-red { background-color: var(--mutti-red); }
+        .mutti-red-text { color: var(--mutti-red); }
+        .mutti-red-border { border-color: var(--mutti-red); }
+        
+        .hero-section {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            background-size: cover;
+            background-position: center;
+        }
+        .product-card, .recipe-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .loader {
+            border-top-color: var(--mutti-red);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Modal styles */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        .toast {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(-1.5rem);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-50">
+        <img src="https://mutti-parma.com/app/themes/mutti/dist/images/logo.webp" alt="Mutti Logo" class="h-10">
+        <button id="show-saved-btn" class="hidden bg-amber-400 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-500 transition text-sm">
+            My Saved Recipes
+        </button>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-white py-20 px-4">
+        <div class="container mx-auto text-center max-w-3xl">
+            <h1 class="text-4xl md:text-5xl font-black mb-3 tracking-tight">Stuck for recipe ideas?</h1>
+            <p class="text-xl text-gray-200">Let's turn your cupboard staples into a delicious Italian meal.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 md:p-8 max-w-5xl">
+        
+        <!-- Saved Recipes Section -->
+        <div id="saved-recipes-section" class="hidden mb-12">
+            <h2 class="text-3xl font-black text-center mb-8 mutti-red-text">My Saved Recipes</h2>
+            <div id="saved-recipes-output" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Saved recipes will be injected here -->
+            </div>
+        </div>
+
+        <!-- Generator Section -->
+        <div class="bg-white p-6 md:p-8 rounded-lg shadow-2xl -mt-16 relative z-10">
+            <!-- Step 1: Select Mutti Product -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4 flex items-center"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3">1</span>Choose your Mutti hero</h2>
+                <div id="mutti-products" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+            </div>
+
+            <!-- Step 2: Add Ingredients -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4 flex items-center"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3">2</span>Add your other ingredients</h2>
+                <div class="flex flex-wrap sm:flex-nowrap gap-2">
+                    <input type="text" id="ingredient-input" placeholder="e.g., chicken, peppers, beef..." class="flex-grow w-full sm:w-auto border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-red-300 transition">
+                    <button id="add-ingredient-btn" class="w-full sm:w-auto mutti-red text-white font-bold py-3 px-6 rounded-lg hover:bg-red-700 transition">Add</button>
+                </div>
+                <div id="ingredient-tags" class="mt-4 flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Step 3: Generate Recipes -->
+            <div>
+                 <h2 class="text-2xl font-bold mb-4 flex items-center"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3">3</span>Get cooking!</h2>
+                <button id="generate-btn" class="w-full mutti-red text-white font-bold py-4 px-6 rounded-lg text-xl hover:bg-red-700 transition transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100">
+                    Make it Mutti
+                </button>
+            </div>
+        </div>
+
+        <!-- Recipe Results Section -->
+        <div id="results-section" class="mt-12 hidden">
+            <h2 class="text-3xl font-black text-center mb-8 mutti-red-text">Your Recipe Inspiration</h2>
+            <div id="loader" class="flex justify-center items-center py-10 hidden">
+                <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
+            </div>
+            <div id="recipe-output" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+             <div id="error-message" class="hidden text-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mt-6" role="alert">
+                <strong class="font-bold">Oops!</strong>
+                <span class="block sm:inline">Something went wrong. Please try again later.</span>
+            </div>
+        </div>
+        
+        <!-- Image Gallery Section -->
+        <div class="mt-16">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <img src="https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg?auto=compress&cs=tinysrgb&w=600" class="rounded-lg shadow-lg object-cover h-48 w-full" alt="Pasta Dish">
+                <img src="https://images.pexels.com/photos/769969/pexels-photo-769969.jpeg?auto=compress&cs=tinysrgb&w=600" class="rounded-lg shadow-lg object-cover h-48 w-full" alt="Tomatoes">
+                <img src="https://images.pexels.com/photos/128408/pexels-photo-128408.jpeg?auto=compress&cs=tinysrgb&w=600" class="rounded-lg shadow-lg object-cover h-48 w-full" alt="Pizza">
+                <img src="https://images.pexels.com/photos/628776/pexels-photo-628776.jpeg?auto=compress&cs=tinysrgb&w=600" class="rounded-lg shadow-lg object-cover h-48 w-full" alt="Italian Food">
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Shopping List Modal -->
+    <div id="shopping-list-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="modal-content bg-white w-full max-w-md p-6 rounded-lg shadow-xl relative transform scale-95">
+            <button id="close-modal-btn" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            <h2 id="shopping-list-title" class="text-2xl font-bold mb-4 mutti-red-text">Shopping List</h2>
+            <div id="shopping-list-content" class="space-y-2 max-h-64 overflow-y-auto pr-2"></div>
+            <div class="mt-6 flex gap-2">
+                <button id="copy-list-btn" class="flex-1 bg-gray-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-800 transition">Copy List</button>
+                <button id="print-list-btn" class="flex-1 bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition">Print</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast fixed bottom-0 right-1/2 translate-x-1/2 mb-4 bg-gray-800 text-white text-sm py-2 px-4 rounded-lg shadow-lg">
+        Recipe copied to clipboard!
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const productsContainer = document.getElementById('mutti-products');
+            const ingredientInput = document.getElementById('ingredient-input');
+            const addIngredientBtn = document.getElementById('add-ingredient-btn');
+            const ingredientTagsContainer = document.getElementById('ingredient-tags');
+            const generateBtn = document.getElementById('generate-btn');
+            const resultsSection = document.getElementById('results-section');
+            const loader = document.getElementById('loader');
+            const recipeOutput = document.getElementById('recipe-output');
+            const errorMessage = document.getElementById('error-message');
+            const savedRecipesSection = document.getElementById('saved-recipes-section');
+            const savedRecipesOutput = document.getElementById('saved-recipes-output');
+            const showSavedBtn = document.getElementById('show-saved-btn');
+            const modal = document.getElementById('shopping-list-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const toast = document.getElementById('toast');
+
+            // --- State & Data Store ---
+            let selectedProduct = null;
+            let ingredients = ['chicken', 'peppers', 'beef mince', 'celery', 'fish'];
+            let savedRecipes = [];
+            let generatedRecipesStore = []; // Holds the latest generated recipes
+
+            // --- Data ---
+            const muttiProducts = [
+                { name: 'Polpa', img: 'https://mutti-parma.com/wp-content/uploads/2021/03/polpa-finely-chopped-tomatoes-400g-can-1.jpg' },
+                { name: 'Passata', img: 'https://mutti-parma.com/wp-content/uploads/2021/03/passata-sieved-tomatoes-700g-bottle-1.jpg' },
+                { name: 'Puree', img: 'https://mutti-parma.com/wp-content/uploads/2021/03/double-concentrated-tomato-puree-130g-tube-1.jpg' },
+                { name: 'Peeled', img: 'https://mutti-parma.com/wp-content/uploads/2021/03/peeled-tomatoes-400g-can-1.jpg' },
+                { name: 'Cherry', img: 'https://mutti-parma.com/wp-content/uploads/2021/03/cherry-tomatoes-400g-can-1.jpg' },
+                { name: 'San Marzano', img: 'https://mutti-parma.com/wp-content/uploads/2021/03/san-marzano-tomatoes-400g-can-1.jpg' },
+                { name: 'Baby Plum', img: 'https://mutti-parma.com/wp-content/uploads/2021/03/datterini-baby-plum-tomatoes-400g-can-1.jpg' },
+            ];
+
+            // --- Helper Functions ---
+            const showToast = (message) => {
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            };
+
+            // --- Local Storage Functions ---
+            const loadSavedRecipes = () => {
+                const recipesFromStorage = localStorage.getItem('muttiSavedRecipes');
+                savedRecipes = recipesFromStorage ? JSON.parse(recipesFromStorage) : [];
+                renderSavedRecipes();
+            };
+
+            const saveRecipesToStorage = () => {
+                localStorage.setItem('muttiSavedRecipes', JSON.stringify(savedRecipes));
+                renderSavedRecipes();
+            };
+
+            const addRecipeToSaved = (recipe) => {
+                if (!savedRecipes.some(r => r.recipeName === recipe.recipeName)) {
+                    savedRecipes.push(recipe);
+                    saveRecipesToStorage();
+                    showToast('Recipe saved!');
+                } else {
+                    showToast('Recipe is already saved.');
+                }
+            };
+
+            const removeRecipeFromSaved = (recipeName) => {
+                savedRecipes = savedRecipes.filter(r => r.recipeName !== recipeName);
+                saveRecipesToStorage();
+                showToast('Recipe removed.');
+            };
+
+            // --- Render Functions ---
+            const renderProducts = () => {
+                productsContainer.innerHTML = muttiProducts.map(product => `
+                    <div class="product-card p-2 border-2 border-gray-200 rounded-lg text-center cursor-pointer bg-white" data-name="${product.name}">
+                        <img src="${product.img}" alt="${product.name}" class="w-full h-32 object-contain mb-2 rounded" onerror="this.onerror=null;this.src='https://placehold.co/200x200/f8d7da/d42c23?text=Image+Error';">
+                        <span class="font-bold text-sm text-gray-700">${product.name}</span>
+                    </div>
+                `).join('');
+            };
+
+            const renderIngredients = () => {
+                ingredientTagsContainer.innerHTML = ingredients.map((ingredient, index) => `
+                    <div class="tag bg-gray-200 text-gray-800 text-sm font-bold px-3 py-1 rounded-full flex items-center gap-2">
+                        <span>${ingredient}</span>
+                        <button data-index="${index}" class="remove-ingredient-btn text-gray-500 hover:text-red-500 font-black text-lg leading-none">&times;</button>
+                    </div>
+                `).join('');
+            };
+            
+            const createRecipeCardHTML = (recipe, index, source, isSaved) => {
+                const ingredientsList = recipe.ingredients.map(ing => `<li class="mb-1">${ing}</li>`).join('');
+                const methodList = recipe.method.map(step => `<li class="mb-2 pl-2">${step}</li>`).join('');
+                
+                return `
+                    <div class="recipe-card bg-white p-6 rounded-lg shadow-xl flex flex-col" data-recipe-index="${index}" data-recipe-source="${source}">
+                        <h3 class="text-xl font-black mutti-red-text mb-2">${recipe.recipeName}</h3>
+                        <p class="text-gray-600 mb-4 italic text-sm">"${recipe.description}"</p>
+                        <div class="flex-grow">
+                            <h4 class="font-bold mb-2 border-b pb-1">Ingredients</h4>
+                            <ul class="list-disc list-inside mb-4 text-sm text-gray-700">${ingredientsList}</ul>
+                            <h4 class="font-bold mb-2 border-b pb-1">Method</h4>
+                            <ol class="list-decimal list-inside text-sm text-gray-700 space-y-2">${methodList}</ol>
+                        </div>
+                        <div class="mt-4 pt-4 border-t flex justify-around items-center gap-2">
+                            <button class="save-btn" title="${isSaved ? 'Unsave Recipe' : 'Save Recipe'}">${isSaved ? 
+                                '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-500 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" /></svg>' : 
+                                '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 hover:text-amber-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>'}
+                            </button>
+                            <button class="share-btn" title="Share Recipe">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 hover:text-blue-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367-2.684zm0 9.368a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
+                            </button>
+                            <button class="shopping-list-btn" title="Create Shopping List">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 hover:text-green-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const renderGeneratedRecipes = () => {
+                if (generatedRecipesStore.length === 0) {
+                    recipeOutput.innerHTML = '';
+                    return;
+                }
+                recipeOutput.innerHTML = generatedRecipesStore.map((recipe, index) => {
+                    const isSaved = savedRecipes.some(r => r.recipeName === recipe.recipeName);
+                    return createRecipeCardHTML(recipe, index, 'generated', isSaved);
+                }).join('');
+            };
+            
+            const renderSavedRecipes = () => {
+                if(savedRecipes.length > 0) {
+                    savedRecipesSection.classList.remove('hidden');
+                    showSavedBtn.classList.remove('hidden');
+                    savedRecipesOutput.innerHTML = savedRecipes.map((recipe, index) => {
+                        return createRecipeCardHTML(recipe, index, 'saved', true);
+                    }).join('');
+                } else {
+                    savedRecipesSection.classList.add('hidden');
+                    showSavedBtn.classList.add('hidden');
+                }
+            };
+
+            // --- Event Handlers ---
+            const handleProductSelect = (productName, element) => {
+                selectedProduct = productName;
+                document.querySelectorAll('#mutti-products > div').forEach(el => el.classList.remove('mutti-red-border', 'ring-4', 'ring-red-200'));
+                element.classList.add('mutti-red-border', 'ring-4', 'ring-red-200');
+                validateForm();
+            };
+            
+            const addIngredient = () => {
+                const newIngredient = ingredientInput.value.trim();
+                if (newIngredient && !ingredients.includes(newIngredient.toLowerCase())) {
+                    ingredients.push(newIngredient.toLowerCase());
+                    renderIngredients();
+                    ingredientInput.value = '';
+                }
+                ingredientInput.focus();
+            };
+
+            const removeIngredient = (index) => {
+                ingredients.splice(index, 1);
+                renderIngredients();
+            };
+            
+            const validateForm = () => { generateBtn.disabled = !selectedProduct; };
+
+            const handleCardClick = (e) => {
+                const card = e.target.closest('.recipe-card');
+                if (!card) return;
+
+                const source = card.dataset.recipeSource;
+                const index = parseInt(card.dataset.recipeIndex, 10);
+                const recipe = source === 'generated' ? generatedRecipesStore[index] : savedRecipes[index];
+
+                if (!recipe) return;
+
+                if (e.target.closest('.save-btn')) {
+                    const isSaved = savedRecipes.some(r => r.recipeName === recipe.recipeName);
+                    if (isSaved) {
+                        removeRecipeFromSaved(recipe.recipeName);
+                    } else {
+                        addRecipeToSaved(recipe);
+                    }
+                    renderGeneratedRecipes();
+                }
+                if (e.target.closest('.share-btn')) {
+                    shareRecipe(recipe);
+                }
+                if (e.target.closest('.shopping-list-btn')) {
+                    showShoppingList(recipe);
+                }
+            };
+            
+            // --- Feature Functions ---
+            
+            const shareRecipe = async (recipe) => {
+                const title = recipe.recipeName;
+                const text = `Check out this recipe: ${recipe.recipeName}\n\nIngredients:\n${recipe.ingredients.join('\n')}\n\nMethod:\n${recipe.method.join('\n\n')}`;
+                
+                if (navigator.share) {
+                    try {
+                        await navigator.share({ title, text });
+                    } catch (error) {
+                        console.error('Error sharing:', error);
+                    }
+                } else {
+                    try {
+                        const tempTextArea = document.createElement('textarea');
+                        tempTextArea.value = text;
+                        document.body.appendChild(tempTextArea);
+                        tempTextArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempTextArea);
+                        showToast('Recipe copied to clipboard!');
+                    } catch (err) {
+                        console.error('Fallback copy failed', err);
+                    }
+                }
+            };
+
+            const showShoppingList = (recipe) => {
+                const contentEl = document.getElementById('shopping-list-content');
+                document.getElementById('shopping-list-title').textContent = `${recipe.recipeName} - Shopping List`;
+                contentEl.innerHTML = recipe.ingredients.map(ing => `
+                    <label class="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100">
+                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-red-600 focus:ring-red-500">
+                        <span>${ing}</span>
+                    </label>
+                `).join('');
+                
+                document.getElementById('copy-list-btn').onclick = () => {
+                    const listText = recipe.ingredients.join('\n');
+                    navigator.clipboard.writeText(listText).then(() => showToast('List copied!'));
+                };
+                
+                document.getElementById('print-list-btn').onclick = () => {
+                    const printWindow = window.open('', '_blank');
+                    printWindow.document.write(`<html><head><title>Shopping List</title></head><body><h2>${recipe.recipeName}</h2><ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></body></html>`);
+                    printWindow.document.close();
+                    printWindow.print();
+                };
+
+                modal.classList.remove('hidden');
+                setTimeout(() => modal.classList.add('opacity-100'), 10);
+                setTimeout(() => modal.querySelector('.modal-content').classList.add('scale-100'), 10);
+            };
+
+            const hideShoppingList = () => {
+                modal.querySelector('.modal-content').classList.remove('scale-100');
+                modal.classList.remove('opacity-100');
+                setTimeout(() => modal.classList.add('hidden'), 250);
+            };
+
+            // --- API Call ---
+            async function getRecipes() {
+                resultsSection.classList.remove('hidden');
+                loader.classList.remove('hidden');
+                recipeOutput.innerHTML = '';
+                errorMessage.classList.add('hidden');
+                generateBtn.disabled = true;
+                generateBtn.textContent = 'Thinking of something delicious...';
+                window.scrollTo({ top: resultsSection.offsetTop - 80, behavior: 'smooth' });
+
+                const apiKey = "AIzaSyCNHrnnVvpGlBTEDC_hwM-PSvuCMVgYi90";
+
+                if (apiKey === "YOUR_API_KEY_HERE") {
+                    errorMessage.querySelector('span').textContent = "Please add your Gemini API key to the script.";
+                    errorMessage.classList.remove('hidden');
+                    loader.classList.add('hidden');
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = 'Make it Mutti';
+                    return;
+                }
+
+                const prompt = `You are an experienced, versatile, and innovative Italian Chef. Create three distinct recipes using Mutti ${selectedProduct} and these ingredients: ${ingredients.join(', ')}. For each recipe, provide a "recipeName", a short "description", a list of "ingredients", and a step-by-step "method". Return a JSON object with a "recipes" key containing an array of the three recipes.`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                const payload = {
+                    contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { "recipes": { type: "ARRAY", items: { type: "OBJECT", properties: { "recipeName": { "type": "STRING" }, "description": { "type": "STRING" }, "ingredients": { "type": "ARRAY", "items": { "type": "STRING" } }, "method": { "type": "ARRAY", "items": { "type": "STRING" } } }, required: ["recipeName", "description", "ingredients", "method"] } } }, required: ["recipes"] } }
+                };
+
+                try {
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
+                        const jsonText = result.candidates[0].content.parts[0].text;
+                        const parsedData = JSON.parse(jsonText);
+                        generatedRecipesStore = parsedData.recipes;
+                        renderGeneratedRecipes();
+                    } else {
+                         throw new Error("Invalid response structure from API.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching recipes:", error);
+                    errorMessage.querySelector('span').textContent = "Something went wrong fetching recipes. Please try again later.";
+                    errorMessage.classList.remove('hidden');
+                } finally {
+                    loader.classList.add('hidden');
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = 'Make it Mutti';
+                    validateForm();
+                }
+            }
+
+            // --- Event Listeners ---
+            productsContainer.addEventListener('click', (e) => {
+                const card = e.target.closest('.product-card');
+                if (card) handleProductSelect(card.dataset.name, card);
+            });
+            addIngredientBtn.addEventListener('click', addIngredient);
+            ingredientInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addIngredient(); } });
+            ingredientTagsContainer.addEventListener('click', (e) => { if (e.target.classList.contains('remove-ingredient-btn')) removeIngredient(parseInt(e.target.dataset.index)); });
+            generateBtn.addEventListener('click', getRecipes);
+            recipeOutput.addEventListener('click', handleCardClick);
+            savedRecipesOutput.addEventListener('click', handleCardClick);
+            showSavedBtn.addEventListener('click', () => savedRecipesSection.scrollIntoView({ behavior: 'smooth' }));
+            closeModalBtn.addEventListener('click', hideShoppingList);
+            modal.addEventListener('click', (e) => { if (e.target === modal) hideShoppingList(); });
+
+            // --- Initial Render ---
+            loadSavedRecipes();
+            renderProducts();
+            renderIngredients();
+            validateForm();
+        });
+    </script>
+</body>
+</html>
