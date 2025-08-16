@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Oswald:wght@700&family=Playfair+Display:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
             --mutti-red: #d42c23;
@@ -15,9 +15,17 @@
             --mutti-dark: #3a3a3a;
         }
         body {
-            font-family: 'Lato', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--mutti-cream);
             color: var(--mutti-dark);
+        }
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        .font-heading {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         .mutti-red { background-color: var(--mutti-red); }
         .mutti-red-text { color: var(--mutti-red); }
@@ -37,9 +45,7 @@
         }
         .loader {
             border-radius: 50%;
-            /* Creates a spinning gradient from Mutti red to light grey */
             background: conic-gradient(from 180deg at 50% 50%, #e5e7eb, var(--mutti-red));
-            /* Use a mask to cut out the center, creating a ring effect (12px thick) */
             -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 12px), #000 0);
             mask: radial-gradient(farthest-side, #0000 calc(100% - 12px), #000 0);
             animation: spin 1s linear infinite;
@@ -47,7 +53,6 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        /* Modal styles */
         .modal {
             transition: opacity 0.25s ease;
         }
@@ -71,7 +76,7 @@
     <!-- Header -->
     <header class="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-50">
         <img src="https://mutti-parma.com/app/themes/mutti/dist/images/logo.webp" alt="Mutti Logo" class="h-10">
-        <button id="open-saved-modal-btn" class="hidden bg-amber-400 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-500 transition text-sm">
+        <button id="open-saved-modal-btn" class="hidden bg-amber-400 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-500 transition text-sm font-heading">
             My Saved Recipes
         </button>
     </header>
@@ -79,8 +84,8 @@
     <!-- Hero Section -->
     <section class="hero-section text-white py-20 px-4">
         <div class="container mx-auto text-center max-w-3xl">
-            <h1 class="text-4xl md:text-5xl font-black mb-3 tracking-tight">Stuck for recipe ideas?</h1>
-            <p class="text-xl text-gray-200">Let's turn your cupboard staples into a delicious  meal.</p>
+            <h1 class="text-4xl md:text-5xl font-black mb-3 tracking-tight font-display">Stuck for recipe ideas?</h1>
+            <p class="text-xl text-gray-200">Let's turn your cupboard staples into a delicious meal.</p>
         </div>
     </section>
 
@@ -91,24 +96,24 @@
         <div class="bg-white p-6 md:p-8 rounded-lg shadow-2xl -mt-16 relative z-10">
             <!-- Step 1: Select Mutti Product -->
             <div class="mb-8">
-                <h2 class="text-2xl font-bold mb-4 flex items-center"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3">1</span>Choose your Mutti hero</h2>
+                <h2 class="text-2xl font-bold mb-4 flex items-center font-heading"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3 font-sans">1</span>Choose your Mutti hero</h2>
                 <div id="mutti-products" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4"></div>
             </div>
 
             <!-- Step 2: Add Ingredients -->
             <div class="mb-8">
-                <h2 class="text-2xl font-bold mb-4 flex items-center"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3">2</span>Add your other ingredients</h2>
+                <h2 class="text-2xl font-bold mb-4 flex items-center font-heading"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3 font-sans">2</span>Add your other ingredients</h2>
                 <div class="flex flex-wrap sm:flex-nowrap gap-2">
                     <input type="text" id="ingredient-input" placeholder="e.g., chicken, peppers, beef..." class="flex-grow w-full sm:w-auto border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-red-300 transition">
-                    <button id="add-ingredient-btn" class="w-full sm:w-auto mutti-red text-white font-bold py-3 px-6 rounded-lg hover:bg-red-700 transition">Add</button>
+                    <button id="add-ingredient-btn" class="w-full sm:w-auto mutti-red text-white font-bold py-3 px-6 rounded-lg hover:bg-red-700 transition font-heading">Add</button>
                 </div>
                 <div id="ingredient-tags" class="mt-4 flex flex-wrap gap-2"></div>
             </div>
 
             <!-- Step 3: Generate Recipes -->
             <div>
-                 <h2 class="text-2xl font-bold mb-4 flex items-center"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3">3</span>Get cooking!</h2>
-                <button id="generate-btn" class="w-full mutti-red text-white font-bold py-4 px-6 rounded-lg text-xl hover:bg-red-700 transition transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100">
+                 <h2 class="text-2xl font-bold mb-4 flex items-center font-heading"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3 font-sans">3</span>Get cooking!</h2>
+                <button id="generate-btn" class="w-full mutti-red text-white font-bold py-4 px-6 rounded-lg text-xl hover:bg-red-700 transition transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100 font-heading">
                     Make it Mutti
                 </button>
             </div>
@@ -116,7 +121,7 @@
 
         <!-- Recipe Results Section -->
         <div id="results-section" class="mt-12 hidden">
-            <h2 class="text-3xl font-black text-center mb-8 mutti-red-text">Your Recipe Inspiration</h2>
+            <h2 class="text-3xl font-black text-center mb-8 mutti-red-text font-heading">Your Recipe Inspiration</h2>
             <div id="loader" class="flex justify-center items-center py-10 hidden">
                 <div class="loader h-32 w-32"></div>
             </div>
@@ -143,11 +148,11 @@
     <div id="shopping-list-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
         <div class="modal-content bg-white w-full max-w-md p-6 rounded-lg shadow-xl relative transform scale-95">
             <button id="close-modal-btn" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
-            <h2 id="shopping-list-title" class="text-2xl font-bold mb-4 mutti-red-text">Shopping List</h2>
+            <h2 id="shopping-list-title" class="text-2xl font-bold mb-4 mutti-red-text font-heading">Shopping List</h2>
             <div id="shopping-list-content" class="space-y-2 max-h-64 overflow-y-auto pr-2"></div>
             <div class="mt-6 flex flex-col sm:flex-row gap-2">
-                <button id="print-selected-btn" class="flex-1 bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Print Selected</button>
-                <button id="print-all-btn" class="flex-1 bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition">Print All</button>
+                <button id="print-selected-btn" class="flex-1 bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition font-heading">Print Selected</button>
+                <button id="print-all-btn" class="flex-1 bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition font-heading">Print All</button>
             </div>
         </div>
     </div>
@@ -156,7 +161,7 @@
     <div id="saved-recipes-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
         <div class="modal-content bg-white w-full max-w-6xl h-[90vh] p-6 rounded-lg shadow-xl relative transform scale-95 flex flex-col">
             <button id="close-saved-modal-btn" class="absolute top-3 right-4 text-gray-500 hover:text-gray-800 text-3xl z-10">&times;</button>
-            <h2 class="text-3xl font-black mb-6 mutti-red-text text-center">My Saved Recipes</h2>
+            <h2 class="text-3xl font-black mb-6 mutti-red-text text-center font-heading">My Saved Recipes</h2>
             <div id="saved-recipes-modal-output" class="flex-grow overflow-y-auto p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Saved recipes will be injected here -->
             </div>
@@ -274,12 +279,12 @@
                 
                 return `
                     <div class="recipe-card bg-white p-6 rounded-lg shadow-xl flex flex-col" data-recipe-index="${index}" data-recipe-source="${source}">
-                        <h3 class="text-xl font-black mutti-red-text mb-2">${recipe.recipeName}</h3>
+                        <h3 class="text-xl font-black mutti-red-text mb-2 font-heading">${recipe.recipeName}</h3>
                         <p class="text-gray-600 mb-4 italic text-sm">"${recipe.description}"</p>
                         <div class="flex-grow">
-                            <h4 class="font-bold mb-2 border-b pb-1">Ingredients</h4>
+                            <h4 class="font-bold mb-2 border-b pb-1 font-heading">Ingredients</h4>
                             <ul class="list-disc list-inside mb-4 text-sm text-gray-700">${ingredientsList}</ul>
-                            <h4 class="font-bold mb-2 border-b pb-1">Method</h4>
+                            <h4 class="font-bold mb-2 border-b pb-1 font-heading">Method</h4>
                             <ol class="list-decimal list-inside text-sm text-gray-700 space-y-2">${methodList}</ol>
                         </div>
                         <div class="mt-4 pt-4 border-t flex justify-around items-center gap-2">
@@ -367,7 +372,6 @@
                     } else {
                         addRecipeToSaved(recipe);
                     }
-                    // Re-render both views to keep them in sync
                     renderGeneratedRecipes();
                     renderSavedRecipes();
                 }
@@ -415,7 +419,6 @@
                     </label>
                 `).join('');
                 
-                // --- Print Selected Button Logic ---
                 document.getElementById('print-selected-btn').onclick = () => {
                     const selectedItems = Array.from(contentEl.querySelectorAll('input[type="checkbox"]:checked'))
                                              .map(cb => cb.nextElementSibling.textContent);
@@ -431,7 +434,6 @@
                     printWindow.print();
                 };
                 
-                // --- Print All Button Logic ---
                 document.getElementById('print-all-btn').onclick = () => {
                     const printWindow = window.open('', '_blank');
                     printWindow.document.write(`<html><head><title>Shopping List</title></head><body><h2>${recipe.recipeName}</h2><ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></body></html>`);
@@ -451,7 +453,7 @@
             };
 
             const showSavedRecipesModal = () => {
-                renderSavedRecipes(); // Re-render to ensure content is fresh
+                renderSavedRecipes();
                 savedRecipesModal.classList.remove('hidden');
                 setTimeout(() => savedRecipesModal.classList.add('opacity-100'), 10);
                 setTimeout(() => savedRecipesModal.querySelector('.modal-content').classList.add('scale-100'), 10);
@@ -462,7 +464,6 @@
                 savedRecipesModal.classList.remove('opacity-100');
                 setTimeout(() => savedRecipesModal.classList.add('hidden'), 250);
             };
-
 
             // --- API Call ---
             const fetchWithBackoff = async (url, options, maxRetries = 5, initialDelay = 1000) => {
@@ -545,7 +546,6 @@
             closeSavedModalBtn.addEventListener('click', hideSavedRecipesModal);
             savedRecipesModal.addEventListener('click', (e) => { if (e.target === savedRecipesModal) hideSavedRecipesModal(); });
             savedRecipesModalOutput.addEventListener('click', handleCardClick);
-
 
             // --- Initial Render ---
             loadSavedRecipes();
