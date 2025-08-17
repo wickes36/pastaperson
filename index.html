@@ -3,607 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mutti Recipe Inspiration</title>
+    <title>Mutti | What's Your Pasta Personality?</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Oswald:wght@700&family=Playfair+Display:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --mutti-red: #d42c23;
-            --mutti-cream: #f9f7f4;
-            --mutti-dark: #3a3a3a;
-        }
+        /* Custom styles to match the reference design */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--mutti-cream);
-            color: var(--mutti-dark);
+            font-family: 'Lato', sans-serif;
+            /* Added background image with a dark overlay for text contrast */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1599974579601-245f35de41f2?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Keeps the background static on scroll */
+            color: #333333;
+        }
+        .content-wrapper {
+             background-color: #fcf9f4; /* Creamy background from reference site */
         }
         .font-display {
             font-family: 'Playfair Display', serif;
         }
-        .font-heading {
-            font-family: 'Oswald', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        .mutti-red-text {
+            color: #d52b1e;
         }
-        .mutti-red { background-color: var(--mutti-red); }
-        .mutti-red-text { color: var(--mutti-red); }
-        .mutti-red-border { border-color: var(--mutti-red); }
+        .mutti-red-bg {
+            background-color: #d52b1e;
+        }
+        .mutti-gold-bg {
+            background-color: #f5a623;
+        }
         
-        .hero-section {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
-            background-size: cover;
-            background-position: center;
-        }
-        .product-card, .recipe-card {
+        /* Main action button style */
+        .btn-action {
+            padding: 0.75rem 2rem;
+            border-radius: 0.25rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.05em;
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
         }
-        .loader {
-            border-radius: 50%;
-            background: conic-gradient(from 180deg at 50% 50%, #e5e7eb, var(--mutti-red));
-            -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 12px), #000 0);
-            mask: radial-gradient(farthest-side, #0000 calc(100% - 12px), #000 0);
-            animation: spin 1s linear infinite;
+
+        /* Answer button style */
+        .btn-answer {
+            background-color: white;
+            border: 2px solid #e0e0e0;
+            transition: all 0.2s ease-in-out;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .btn-answer:hover {
+            border-color: #d52b1e;
+            background-color: #fff8f7;
+            transform: translateY(-2px);
         }
-        .modal {
-            transition: opacity 0.25s ease;
+
+        /* Simple transition for showing/hiding elements */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
         }
-        .modal-content {
-            transition: transform 0.25s ease;
-        }
-        .toast {
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
-        }
-        .toast.show {
-            visibility: visible;
-            opacity: 1;
-            transform: translateY(-1.5rem);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- Header -->
-    <header class="bg-white shadow-md p-4 grid grid-cols-3 items-center sticky top-0 z-50">
-        <div><!-- Left placeholder --></div>
-        <div class="flex justify-center">
-            <img src="https://mutti-parma.com/app/themes/mutti/dist/images/logo.webp" alt="Mutti Logo" class="h-10">
-        </div>
-        <div class="flex justify-end">
-            <button id="open-saved-modal-btn" class="hidden mutti-red text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition text-sm font-heading">
-                My Saved Recipes
-            </button>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero-section text-white py-20 px-4">
-        <div class="container mx-auto text-center max-w-3xl">
-            <h1 class="text-4xl md:text-5xl font-black mb-3 tracking-tight font-display">Stuck for recipe ideas?</h1>
-            <p class="text-xl text-gray-200">Let's turn your cupboard staples into a delicious meal.</p>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <main class="container mx-auto p-4 md:p-8 max-w-5xl">
-
-        <!-- Generator Section -->
-        <div class="bg-white p-6 md:p-8 rounded-lg shadow-2xl -mt-16 relative z-10">
-            <!-- Step 1: Select Mutti Product -->
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold mb-4 flex items-center font-heading"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3 font-sans">1</span>Choose your Mutti hero</h2>
-                <div id="mutti-products" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4"></div>
-            </div>
-
-            <!-- Step 2: Add Ingredients -->
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold mb-4 flex items-center font-heading"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3 font-sans">2</span>Add your other ingredients</h2>
-                <div class="flex flex-wrap sm:flex-nowrap gap-2">
-                    <input type="text" id="ingredient-input" placeholder="e.g., chicken, peppers, beef..." class="flex-grow w-full sm:w-auto border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-red-300 transition">
-                    <button id="add-ingredient-btn" class="w-full sm:w-auto mutti-red text-white font-bold py-3 px-6 rounded-lg hover:bg-red-700 transition font-heading">Add</button>
-                </div>
-                <div id="ingredient-tags" class="mt-4 flex flex-wrap gap-2"></div>
-            </div>
-
-            <!-- Step 3: Generate Recipes -->
-            <div>
-                 <h2 class="text-2xl font-bold mb-4 flex items-center font-heading"><span class="mutti-red text-white rounded-full w-8 h-8 text-lg inline-flex items-center justify-center mr-3 font-sans">3</span>Get cooking!</h2>
-                <button id="generate-btn" class="w-full mutti-red text-white font-bold py-4 px-6 rounded-lg text-xl hover:bg-red-700 transition transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100 font-heading">
-                    Make it Mutti
-                </button>
-            </div>
-        </div>
-
-        <!-- Recipe Results Section -->
-        <div id="results-section" class="mt-12 hidden">
-            <h2 class="text-3xl font-black text-center mb-8 mutti-red-text font-heading">Your Recipe Inspiration</h2>
-            <div id="loader" class="flex justify-center items-center py-10 hidden">
-                <div class="loader h-32 w-32"></div>
-            </div>
-            <div id="recipe-output" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-             <div id="error-message" class="hidden text-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mt-6" role="alert">
-                <strong class="font-bold">Oops!</strong>
-                <span class="block sm:inline">Something went wrong. Please try again later.</span>
-            </div>
-        </div>
+    <!-- The main container for the page content -->
+    <div class="container mx-auto p-4 sm:p-8 max-w-2xl">
         
-        <!-- Image Gallery Section -->
-        <div class="mt-16">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <img src="https://cdn1.mutti-parma.com/spai/q_glossy+w_873+h_949+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2025/07/img-4906-4-scaled.jpg" class="rounded-lg shadow-lg object-cover h-48 w-full" alt="Pasta Dish" onerror="this.onerror=null;this.src='https://placehold.co/600x400/f8d7da/d42c23?text=Image+Not+Found';">
-                <img src="https://cdn1.mutti-parma.com/spai/q_glossy+w_873+h_950+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2025/07/norma-mutti-2-scaled.jpg" class="rounded-lg shadow-lg object-cover h-48 w-full" alt="Tomatoes" onerror="this.onerror=null;this.src='https://placehold.co/600x400/f8d7da/d42c23?text=Image+Not+Found';">
-                <img src="https://cdn1.mutti-parma.com/spai/q_glossy+w_873+h_950+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2025/07/mozzarelle-in-carrozza-con-sugo-olive-leccino-scaled.jpg" class="rounded-lg shadow-lg object-cover h-48 w-full" alt="Pizza" onerror="this.onerror=null;this.src='https://placehold.co/600x400/f8d7da/d42c23?text=Image+Not+Found';">
-                <img src="https://cdn1.mutti-parma.com/spai/q_glossy+w_873+h_950+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2025/07/pizza-light-di-zucchine-10-1-scaled.jpg" class="rounded-lg shadow-lg object-cover h-48 w-full" alt="Italian Food" onerror="this.onerror=null;this.src='https://placehold.co/600x400/f8d7da/d42c23?text=Image+Not+Found';">
-            </div>
-        </div>
+        <!-- Wrapper for the content with the creamy background -->
+        <div class="content-wrapper rounded-lg shadow-2xl overflow-hidden">
+            <!-- Header Section -->
+            <header class="text-center p-6 sm:p-8">
+                <img src="https://mutti-recipe.netlify.app/static/media/mutti-logo.b695e708.svg" alt="Mutti Logo" class="mx-auto mb-6 h-20" onerror="this.onerror=null;this.src='https://placehold.co/200x80/e53e3e/ffffff?text=Mutti+Logo';">
+                <h1 class="text-4xl md:text-5xl font-display mutti-red-text font-bold">What's Your Pasta Personality?</h1>
+                <p class="mt-3 text-lg text-gray-600">Answer 5 simple questions to discover your perfect Mutti pasta sauce match!</p>
+            </header>
 
-    </main>
-
-    <!-- Shopping List Modal -->
-    <div id="shopping-list-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden opacity-0">
-        <div class="modal-content bg-white w-full max-w-md p-6 rounded-lg shadow-xl relative transform scale-95">
-            <button id="close-modal-btn" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
-            <h2 id="shopping-list-title" class="text-2xl font-bold mb-4 mutti-red-text font-heading">Shopping List</h2>
-            <div id="shopping-list-content" class="space-y-2 max-h-64 overflow-y-auto pr-2"></div>
-            <div class="mt-6 flex flex-col sm:flex-row gap-2">
-                <button id="print-selected-btn" class="flex-1 mutti-red text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition font-heading">Print Selected</button>
-                <button id="print-all-btn" class="flex-1 bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition font-heading">Print All</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Saved Recipes Modal -->
-    <div id="saved-recipes-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden opacity-0">
-        <div class="modal-content bg-white w-full max-w-6xl h-[90vh] p-6 rounded-lg shadow-xl relative transform scale-95 flex flex-col">
-            <button id="close-saved-modal-btn" class="absolute top-3 right-4 text-gray-500 hover:text-gray-800 text-3xl z-10">&times;</button>
-            <h2 class="text-3xl font-black mb-6 mutti-red-text text-center font-heading">My Saved Recipes</h2>
-            <div id="saved-recipes-modal-output" class="flex-grow overflow-y-auto p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Saved recipes will be injected here -->
-            </div>
-            <div id="no-saved-recipes" class="hidden flex-col items-center justify-center h-full text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                </svg>
-                <p class="text-xl">You haven't saved any recipes yet.</p>
-                <p>Click the bookmark icon on a recipe to save it for later.</p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Toast Notification -->
-    <div id="toast" class="toast fixed bottom-0 right-1/2 translate-x-1/2 mb-4 bg-gray-800 text-white text-sm py-2 px-4 rounded-lg shadow-lg">
-        Recipe copied to clipboard!
-    </div>
-    
-    <!-- Footer -->
-    <footer class="mutti-red text-white mt-16">
-        <div class="container mx-auto px-6 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="font-heading text-lg mb-4">Mutti</h3>
-                    <ul>
-                        <li class="mb-2"><a href="#" class="hover:underline">Products</a></li>
-                        <li class="mb-2"><a href="#" class="hover:underline">Recipes</a></li>
-                        <li class="mb-2"><a href="#" class="hover:underline">Our story</a></li>
-                        <li class="mb-2"><a href="#" class="hover:underline">Contact us</a></li>
-                    </ul>
+            <!-- Quiz Container -->
+            <main id="quiz-container" class="bg-white p-6 sm:p-8">
+                
+                <!-- Welcome Screen -->
+                <div id="welcome-screen" class="text-center fade-in">
+                    <h2 class="text-3xl font-display font-bold mb-4">Ready to find your flavor?</h2>
+                    <p class="mb-8 text-gray-600">Let's get started and uncover the sauce that's made for you.</p>
+                    <button id="start-btn" class="btn-action mutti-gold-bg text-white">Start Quiz</button>
                 </div>
-                <div>
-                    <h3 class="font-heading text-lg mb-4">Legal</h3>
-                    <ul>
-                        <li class="mb-2"><a href="#" class="hover:underline">Privacy Policy</a></li>
-                        <li class="mb-2"><a href="#" class="hover:underline">Cookie Policy</a></li>
-                        <li class="mb-2"><a href="#" class="hover:underline">Terms and Conditions</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-heading text-lg mb-4">Follow us</h3>
-                    <div class="flex space-x-4">
-                        <a href="#" aria-label="Facebook">
-                             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path></svg>
-                        </a>
-                        <a href="#" aria-label="Instagram">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.316 1.363.364 2.427.048 1.067.06 1.407.06 4.155 0 2.748-.012 3.088-.06 4.155-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.316-2.427.364-1.067.048-1.407.06-4.155.06-2.748 0-3.088-.012-4.155-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.316-1.363-.364-2.427C2.013 15.315 2 14.975 2 12.227c0-2.748.012-3.088.06-4.155.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.316 2.427-.364C8.92 2.013 9.26 2 12 2h.315zM12 4.545c-2.39 0-4.332 1.942-4.332 4.332 0 2.39 1.942 4.332 4.332 4.332 2.39 0 4.332-1.942 4.332-4.332 0-2.39-1.942-4.332-4.332-4.332zM12 11.43c-1.423 0-2.578-1.155-2.578-2.578s1.155-2.578 2.578-2.578 2.578 1.155 2.578 2.578-1.155 2.578-2.578 2.578zm5.338-6.095a1.227 1.227 0 100-2.454 1.227 1.227 0 000 2.454z" clip-rule="evenodd"></path></svg>
-                        </a>
-                         <a href="#" aria-label="YouTube">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.78 22 12 22 12s0 3.22-.42 4.814a2.506 2.506 0 01-1.768 1.768c-1.594.42-7.812.42-7.812.42s-6.218 0-7.812-.42a2.506 2.506 0 01-1.768-1.768C2 15.22 2 12 2 12s0-3.22.42-4.814a2.506 2.506 0 011.768-1.768C5.782 5 12 5 12 5s6.218 0 7.812.418zM9.75 15.5V8.5l6.5 3.5-6.5 3.5z" clip-rule="evenodd"></path></svg>
-                        </a>
-                        <a href="#" aria-label="Pinterest">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.237 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.182-.78 1.172-4.97 1.172-4.97s-.299-.6-.299-1.486c0-1.39.806-2.428 1.81-2.428.852 0 1.265.64 1.265 1.408 0 .858-.545 2.14-.828 3.33-.236.995.5 1.807 1.48 1.807 1.778 0 3.144-1.874 3.144-4.58 0-2.415-1.717-4.183-4.184-4.183-2.828 0-4.516 2.132-4.516 4.34 0 .859.331 1.781.745 2.281a.3.3 0 01.069.288l-.278 1.133c-.044.183-.145.223-.335.134-1.249-.581-2.03-2.407-2.03-3.874 0-3.154 2.292-6.052 6.608-6.052 3.469 0 6.165 2.473 6.165 5.776 0 3.472-2.175 6.22-5.19 6.22-1.013 0-1.965-.525-2.291-1.148l-.623 2.378c-.226.869-.835 1.958-1.244 2.621.937.29 1.909.444 2.91.444 5.523 0 10-4.477 10-10S17.523 2 12 2z" clip-rule="evenodd"></path></svg>
-                        </a>
+
+                <!-- Question Section (Initially Hidden) -->
+                <div id="question-section" class="hidden fade-in">
+                    <div id="question-container">
+                        <!-- Questions will be dynamically inserted here -->
+                    </div>
+                    <div class="mt-8 text-center">
+                        <p id="progress-text" class="text-sm text-gray-500 tracking-wider">Question 1 of 5</p>
                     </div>
                 </div>
-            </div>
-            <div class="mt-12 border-t border-red-500 pt-8 text-center text-sm">
-                <p>&copy; 2025 Mutti S.p.A. All rights reserved.</p>
-                <p>Mutti S.p.A. a socio unico | Via Traversetolo, 28 - 43022 Montechiarugolo (PR) Italy</p>
-            </div>
+
+                <!-- Result Section (Initially Hidden) -->
+                <div id="result-section" class="hidden text-center fade-in">
+                    <h2 class="text-2xl font-bold mb-2">Your Pasta Personality is...</h2>
+                    <h3 id="personality-title" class="text-5xl font-display mutti-red-text font-bold mb-4"></h3>
+                    <img id="sauce-image" src="" alt="Mutti Pasta Sauce" class="mx-auto mb-5 rounded-lg shadow-lg" style="max-width: 250px;">
+                    <p id="personality-description" class="text-gray-600 text-lg mb-8"></p>
+                    <button id="restart-btn" class="btn-action mutti-red-bg text-white">Take Again</button>
+                </div>
+
+            </main>
         </div>
-    </footer>
+
+        <!-- Footer -->
+        <footer class="text-center mt-8 text-gray-200 text-sm">
+            <p>&copy; 2024 Mutti S.p.A. All Rights Reserved.</p>
+        </footer>
+
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- DOM Elements ---
-            const productsContainer = document.getElementById('mutti-products');
-            const ingredientInput = document.getElementById('ingredient-input');
-            const addIngredientBtn = document.getElementById('add-ingredient-btn');
-            const ingredientTagsContainer = document.getElementById('ingredient-tags');
-            const generateBtn = document.getElementById('generate-btn');
-            const resultsSection = document.getElementById('results-section');
-            const loader = document.getElementById('loader');
-            const recipeOutput = document.getElementById('recipe-output');
-            const errorMessage = document.getElementById('error-message');
-            const openSavedModalBtn = document.getElementById('open-saved-modal-btn');
-            const modal = document.getElementById('shopping-list-modal');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const toast = document.getElementById('toast');
-            // Saved Recipes Modal Elements
-            const savedRecipesModal = document.getElementById('saved-recipes-modal');
-            const closeSavedModalBtn = document.getElementById('close-saved-modal-btn');
-            const savedRecipesModalOutput = document.getElementById('saved-recipes-modal-output');
-            const noSavedRecipesMsg = document.getElementById('no-saved-recipes');
+            const startBtn = document.getElementById('start-btn');
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const questionSection = document.getElementById('question-section');
+            const questionContainer = document.getElementById('question-container');
+            const progressText = document.getElementById('progress-text');
+            const resultSection = document.getElementById('result-section');
+            const personalityTitle = document.getElementById('personality-title');
+            const personalityDescription = document.getElementById('personality-description');
+            const sauceImage = document.getElementById('sauce-image');
+            const restartBtn = document.getElementById('restart-btn');
 
-            // --- State & Data Store ---
-            let selectedProduct = null;
-            let ingredients = ['chicken', 'peppers', 'beef mince', 'celery', 'fish'];
-            let savedRecipes = [];
-            let generatedRecipesStore = []; // Holds the latest generated recipes
-
-            // --- Data ---
-            const muttiProducts = [
-                { name: 'Polpa', img: 'https://cdn1.mutti-parma.com/spai/q_glossy+w_253+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2019/07/polpa.png' },
-                { name: 'Passata', img: 'https://cdn1.mutti-parma.com/spai/q_glossy+w_253+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2019/08/mu061-80042563-product-image-1.png' },
-                { name: 'Puree', img: 'https://cdn1.mutti-parma.com/spai/q_glossy+w_253+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2019/08/double-concentrated-tomato-paste.png' },
-                { name: 'Peeled', img: 'https://cdn1.mutti-parma.com/spai/q_glossy+w_253+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2019/08/peeled-tomatoes.png' },
-                { name: 'Cherry', img: 'https://cdn1.mutti-parma.com/spai/q_glossy+w_253+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2019/09/cherry-tomatoes.png' },
-                { name: 'San Marzano', img: 'https://cdn1.mutti-parma.com/spai/q_glossy+w_253+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2019/09/san-marzano-400g-1-675x1024-1.png' },
-                { name: 'Baby Plum', img: 'https://cdn1.mutti-parma.com/spai/q_glossy+w_253+to_webp+ret_img/mutti-parma.com/app/uploads/sites/23/2022/12/new-55159-baby-plum-tomatoes.png' },
+            // --- Quiz Data ---
+            // This is where you replace the dummy questions and answers.
+            // Each answer has a 'value' which corresponds to one of the personalities.
+            const quizData = [
+                {
+                    // --- Question 1 ---
+                    question: "What's your ideal Friday night?",
+                    answers: [
+                        { text: "A lively dinner party with friends.", value: "classic" },
+                        { text: "A cozy night in with a good book.", value: "simple" },
+                        { text: "Trying a new, adventurous recipe.", value: "bold" },
+                        { text: "Something quick and easy, I'm busy!", value: "vibrant" }
+                    ]
+                },
+                {
+                    // --- Question 2 ---
+                    question: "Pick a vacation destination:",
+                    answers: [
+                        { text: "A charming Italian village.", value: "classic" },
+                        { text: "A peaceful countryside retreat.", value: "simple" },
+                        { text: "A bustling city with spicy food.", value: "bold" },
+                        { text: "A sunny beach with fresh seafood.", value: "vibrant" }
+                    ]
+                },
+                {
+                    // --- Question 3 ---
+                    question: "What's your go-to movie genre?",
+                    answers: [
+                        { text: "Timeless romance or drama.", value: "classic" },
+                        { text: "Heartwarming family comedies.", value: "simple" },
+                        { text: "Action-packed thriller.", value: "bold" },
+                        { text: "A bright and cheerful musical.", value: "vibrant" }
+                    ]
+                },
+                {
+                    // --- Question 4 ---
+                    question: "Choose a color palette:",
+                    answers: [
+                        { text: "Deep reds, greens, and golds.", value: "classic" },
+                        { text: "Soft creams, and gentle pastels.", value: "simple" },
+                        { text: "Rich oranges, and fiery reds.", value: "bold" },
+                        { text: "Bright yellows, and ocean blues.", value: "vibrant" }
+                    ]
+                },
+                {
+                    // --- Question 5 ---
+                    question: "How do you take your coffee?",
+                    answers: [
+                        { text: "A traditional, rich espresso.", value: "classic" },
+                        { text: "Simple, black coffee.", value: "simple" },
+                        { text: "A double-shot with a dash of spice.", value: "bold" },
+                        { text: "A sweet latte with lots of foam.", value: "vibrant" }
+                    ]
+                }
             ];
 
-            // --- Helper Functions ---
-            const showToast = (message) => {
-                toast.textContent = message;
-                toast.classList.add('show');
-                setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            // --- Personalities Data ---
+            // This is where you define the results. Link them with the 'value' from the answers.
+            const personalities = {
+                classic: {
+                    title: "The Timeless Classic",
+                    sauce: "Mutti Classic Basilico",
+                    description: "You appreciate tradition, quality, and the simple joys of a perfectly executed dish. Your ideal sauce is rich, comforting, and full of authentic Italian flavor.",
+                    image: "https://placehold.co/400x400/b91c1c/ffffff?text=Basilico"
+                },
+                simple: {
+                    title: "The Pure & Simple",
+                    sauce: "Mutti Simply Sugo",
+                    description: "You believe in the beauty of simplicity. You love fresh, high-quality ingredients that speak for themselves. Your perfect sauce is clean, sweet, and wonderfully straightforward.",
+                    image: "https://placehold.co/400x400/ef4444/ffffff?text=Sugo"
+                },
+                bold: {
+                    title: "The Bold Adventurer",
+                    sauce: "Mutti Spicy Arrabbiata",
+                    description: "You're not afraid of a little heat and excitement! You love bold flavors that pack a punch and keep things interesting. Your perfect sauce has a fiery kick and a daring personality.",
+                    image: "https://placehold.co/400x400/dc2626/ffffff?text=Arrabbiata"
+                },
+                vibrant: {
+                    title: "The Vibrant Veggie-Lover",
+                    sauce: "Mutti Garden Vegetable",
+                    description: "You are fresh, energetic, and love food that's bursting with life and color. Your ideal sauce is packed with delicious, sun-ripened vegetables and vibrant flavors.",
+                    image: "https://placehold.co/400x400/f87171/ffffff?text=Vegetable"
+                }
             };
 
-            // --- Local Storage Functions ---
-            const loadSavedRecipes = () => {
-                const recipesFromStorage = localStorage.getItem('muttiSavedRecipes');
-                savedRecipes = recipesFromStorage ? JSON.parse(recipesFromStorage) : [];
-                renderSavedRecipes();
-            };
+            let currentQuestionIndex = 0;
+            let userAnswers = [];
 
-            const saveRecipesToStorage = () => {
-                localStorage.setItem('muttiSavedRecipes', JSON.stringify(savedRecipes));
-                renderSavedRecipes();
-            };
+            // --- Functions ---
+            function startQuiz() {
+                welcomeScreen.classList.add('hidden');
+                questionSection.classList.remove('hidden');
+                currentQuestionIndex = 0;
+                userAnswers = [];
+                showQuestion();
+            }
 
-            const addRecipeToSaved = (recipe) => {
-                if (!savedRecipes.some(r => r.recipeName === recipe.recipeName)) {
-                    savedRecipes.push(recipe);
-                    saveRecipesToStorage();
-                    showToast('Recipe saved!');
+            function showQuestion() {
+                // Clear previous question
+                questionContainer.innerHTML = '';
+                
+                const currentQuestion = quizData[currentQuestionIndex];
+                
+                // Create question title
+                const questionTitle = document.createElement('h2');
+                questionTitle.className = 'text-3xl font-display font-bold text-center mb-8';
+                questionTitle.textContent = currentQuestion.question;
+                questionContainer.appendChild(questionTitle);
+
+                // Create answer buttons
+                const answersGrid = document.createElement('div');
+                answersGrid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-4';
+                
+                currentQuestion.answers.forEach(answer => {
+                    const button = document.createElement('button');
+                    button.className = 'btn-answer p-4 rounded-lg text-left text-lg';
+                    button.textContent = a.text;
+                    button.onclick = () => selectAnswer(answer.value);
+                    answersGrid.appendChild(button);
+                });
+
+                questionContainer.appendChild(answersGrid);
+                progressText.textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+            }
+
+            function selectAnswer(value) {
+                userAnswers.push(value);
+                currentQuestionIndex++;
+
+                if (currentQuestionIndex < quizData.length) {
+                    showQuestion();
                 } else {
-                    showToast('Recipe is already saved.');
-                }
-            };
-
-            const removeRecipeFromSaved = (recipeName) => {
-                savedRecipes = savedRecipes.filter(r => r.recipeName !== recipeName);
-                saveRecipesToStorage();
-                showToast('Recipe removed.');
-            };
-
-            // --- Render Functions ---
-            const renderProducts = () => {
-                productsContainer.innerHTML = muttiProducts.map(product => `
-                    <div class="product-card p-2 border-2 border-gray-200 rounded-lg text-center cursor-pointer bg-white" data-name="${product.name}">
-                        <img src="${product.img}" alt="${product.name}" class="w-full h-32 object-contain mb-2 rounded" onerror="this.onerror=null;this.src='https://placehold.co/200x200/f8d7da/d42c23?text=Image+Error';">
-                        <span class="font-bold text-sm text-gray-700">${product.name}</span>
-                    </div>
-                `).join('');
-            };
-
-            const renderIngredients = () => {
-                ingredientTagsContainer.innerHTML = ingredients.map((ingredient, index) => `
-                    <div class="tag bg-gray-200 text-gray-800 text-sm font-bold px-3 py-1 rounded-full flex items-center gap-2">
-                        <span>${ingredient}</span>
-                        <button data-index="${index}" class="remove-ingredient-btn text-gray-500 hover:text-red-500 font-black text-lg leading-none">&times;</button>
-                    </div>
-                `).join('');
-            };
-            
-            const createRecipeCardHTML = (recipe, index, source, isSaved) => {
-                const ingredientsList = recipe.ingredients.map(ing => `<li class="mb-1">${ing}</li>`).join('');
-                const methodList = recipe.method.map(step => `<li class="mb-2 pl-2">${step}</li>`).join('');
-                
-                return `
-                    <div class="recipe-card bg-white p-6 rounded-lg shadow-xl flex flex-col" data-recipe-index="${index}" data-recipe-source="${source}">
-                        <h3 class="text-xl font-black mutti-red-text mb-2 font-heading">${recipe.recipeName}</h3>
-                        <p class="text-gray-600 mb-4 italic text-sm">"${recipe.description}"</p>
-                        <div class="flex-grow">
-                            <h4 class="font-bold mb-2 border-b pb-1 font-heading">Ingredients</h4>
-                            <ul class="list-disc list-inside mb-4 text-sm text-gray-700">${ingredientsList}</ul>
-                            <h4 class="font-bold mb-2 border-b pb-1 font-heading">Method</h4>
-                            <ol class="list-decimal list-inside text-sm text-gray-700 space-y-2">${methodList}</ol>
-                        </div>
-                        <div class="mt-4 pt-4 border-t flex justify-around items-center gap-2">
-                            <button class="save-btn" title="${isSaved ? 'Unsave Recipe' : 'Save Recipe'}">${isSaved ? 
-                                '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mutti-red-text pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" /></svg>' : 
-                                '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 hover:mutti-red-text pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>'}
-                            </button>
-                            <button class="share-btn" title="Share Recipe">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 hover:text-blue-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367-2.684zm0 9.368a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
-                            </button>
-                            <button class="shopping-list-btn" title="Create Shopping List">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 hover:text-green-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            };
-
-            const renderGeneratedRecipes = () => {
-                if (generatedRecipesStore.length === 0) {
-                    recipeOutput.innerHTML = '';
-                    return;
-                }
-                recipeOutput.innerHTML = generatedRecipesStore.map((recipe, index) => {
-                    const isSaved = savedRecipes.some(r => r.recipeName === recipe.recipeName);
-                    return createRecipeCardHTML(recipe, index, 'generated', isSaved);
-                }).join('');
-            };
-            
-            const renderSavedRecipes = () => {
-                if (savedRecipes.length > 0) {
-                    openSavedModalBtn.classList.remove('hidden');
-                    savedRecipesModalOutput.innerHTML = savedRecipes.map((recipe, index) => {
-                        return createRecipeCardHTML(recipe, index, 'saved', true);
-                    }).join('');
-                    savedRecipesModalOutput.classList.remove('hidden');
-                    noSavedRecipesMsg.classList.add('hidden');
-                } else {
-                    openSavedModalBtn.classList.add('hidden');
-                    savedRecipesModalOutput.innerHTML = '';
-                    savedRecipesModalOutput.classList.add('hidden');
-                    noSavedRecipesMsg.classList.remove('hidden');
-                }
-            };
-
-            // --- Event Handlers ---
-            const handleProductSelect = (productName, element) => {
-                selectedProduct = productName;
-                document.querySelectorAll('#mutti-products > div').forEach(el => el.classList.remove('mutti-red-border', 'ring-4', 'ring-red-200'));
-                element.classList.add('mutti-red-border', 'ring-4', 'ring-red-200');
-                validateForm();
-            };
-            
-            const addIngredient = () => {
-                const newIngredient = ingredientInput.value.trim();
-                if (newIngredient && !ingredients.includes(newIngredient.toLowerCase())) {
-                    ingredients.push(newIngredient.toLowerCase());
-                    renderIngredients();
-                    ingredientInput.value = '';
-                }
-                ingredientInput.focus();
-            };
-
-            const removeIngredient = (index) => {
-                ingredients.splice(index, 1);
-                renderIngredients();
-            };
-            
-            const validateForm = () => { generateBtn.disabled = !selectedProduct; };
-
-            const handleCardClick = (e) => {
-                const card = e.target.closest('.recipe-card');
-                if (!card) return;
-
-                const source = card.dataset.recipeSource;
-                const index = parseInt(card.dataset.recipeIndex, 10);
-                const recipe = source === 'generated' ? generatedRecipesStore[index] : savedRecipes[index];
-
-                if (!recipe) return;
-
-                if (e.target.closest('.save-btn')) {
-                    const isSaved = savedRecipes.some(r => r.recipeName === recipe.recipeName);
-                    if (isSaved) {
-                        removeRecipeFromSaved(recipe.recipeName);
-                    } else {
-                        addRecipeToSaved(recipe);
-                    }
-                    renderGeneratedRecipes();
-                    renderSavedRecipes();
-                }
-                if (e.target.closest('.share-btn')) {
-                    shareRecipe(recipe);
-                }
-                if (e.target.closest('.shopping-list-btn')) {
-                    showShoppingList(recipe);
-                }
-            };
-            
-            // --- Feature Functions ---
-            const shareRecipe = async (recipe) => {
-                const title = recipe.recipeName;
-                const text = `Check out this recipe: ${recipe.recipeName}\n\nIngredients:\n${recipe.ingredients.join('\n')}\n\nMethod:\n${recipe.method.join('\n\n')}`;
-                
-                if (navigator.share) {
-                    try {
-                        await navigator.share({ title, text });
-                    } catch (error) {
-                        console.error('Error sharing:', error);
-                    }
-                } else {
-                    try {
-                        const tempTextArea = document.createElement('textarea');
-                        tempTextArea.value = text;
-                        document.body.appendChild(tempTextArea);
-                        tempTextArea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(tempTextArea);
-                        showToast('Recipe copied to clipboard!');
-                    } catch (err) {
-                        console.error('Fallback copy failed', err);
-                    }
-                }
-            };
-
-            const showShoppingList = (recipe) => {
-                const contentEl = document.getElementById('shopping-list-content');
-                document.getElementById('shopping-list-title').textContent = `${recipe.recipeName} - Shopping List`;
-                contentEl.innerHTML = recipe.ingredients.map(ing => `
-                    <label class="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer">
-                        <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-red-600 focus:ring-red-500">
-                        <span>${ing}</span>
-                    </label>
-                `).join('');
-                
-                document.getElementById('print-selected-btn').onclick = () => {
-                    const selectedItems = Array.from(contentEl.querySelectorAll('input[type="checkbox"]:checked'))
-                                             .map(cb => cb.nextElementSibling.textContent);
-
-                    if (selectedItems.length === 0) {
-                        showToast('No items selected to print.');
-                        return;
-                    }
-                    
-                    const printWindow = window.open('', '_blank');
-                    printWindow.document.write(`<html><head><title>Shopping List</title></head><body><h2>${recipe.recipeName} (Selected)</h2><ul>${selectedItems.map(i => `<li>${i}</li>`).join('')}</ul></body></html>`);
-                    printWindow.document.close();
-                    printWindow.print();
-                };
-                
-                document.getElementById('print-all-btn').onclick = () => {
-                    const printWindow = window.open('', '_blank');
-                    printWindow.document.write(`<html><head><title>Shopping List</title></head><body><h2>${recipe.recipeName}</h2><ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></body></html>`);
-                    printWindow.document.close();
-                    printWindow.print();
-                };
-
-                modal.classList.remove('hidden');
-                setTimeout(() => modal.classList.add('opacity-100'), 10);
-                setTimeout(() => modal.querySelector('.modal-content').classList.add('scale-100'), 10);
-            };
-
-            const hideShoppingList = () => {
-                modal.querySelector('.modal-content').classList.remove('scale-100');
-                modal.classList.remove('opacity-100');
-                setTimeout(() => modal.classList.add('hidden'), 250);
-            };
-
-            const showSavedRecipesModal = () => {
-                renderSavedRecipes();
-                savedRecipesModal.classList.remove('hidden');
-                setTimeout(() => savedRecipesModal.classList.add('opacity-100'), 10);
-                setTimeout(() => savedRecipesModal.querySelector('.modal-content').classList.add('scale-100'), 10);
-            };
-
-            const hideSavedRecipesModal = () => {
-                savedRecipesModal.querySelector('.modal-content').classList.remove('scale-100');
-                savedRecipesModal.classList.remove('opacity-100');
-                setTimeout(() => savedRecipesModal.classList.add('hidden'), 250);
-            };
-
-            // --- API Call ---
-            const fetchWithBackoff = async (url, options, maxRetries = 5, initialDelay = 1000) => {
-                let delay = initialDelay;
-                for (let i = 0; i < maxRetries; i++) {
-                    try {
-                        const response = await fetch(url, options);
-                        if (response.status === 429 || response.status >= 500) {
-                            throw new Error(`Retryable HTTP error: ${response.status}`);
-                        }
-                        if (!response.ok) {
-                           throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
-                        }
-                        return response;
-                    } catch (error) {
-                        if (i === maxRetries - 1) throw error;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        delay *= 2;
-                    }
-                }
-            };
-
-            async function getRecipes() {
-                resultsSection.classList.remove('hidden');
-                loader.classList.remove('hidden');
-                recipeOutput.innerHTML = '';
-                errorMessage.classList.add('hidden');
-                generateBtn.disabled = true;
-                generateBtn.textContent = 'Thinking of something delicious...';
-                window.scrollTo({ top: resultsSection.offsetTop - 80, behavior: 'smooth' });
-
-                const apiKey = "AIzaSyCNHrnnVvpGlBTEDC_hwM-PSvuCMVgYi90"; 
-
-                const prompt = `You are an experienced, versatile, and innovative Italian Chef. Create three distinct recipes using Mutti ${selectedProduct} and these ingredients: ${ingredients.join(', ')}. For each recipe, provide a "recipeName", a short "description", a list of "ingredients", and a step-by-step "method". Return a JSON object with a "recipes" key containing an array of the three recipes.`;
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-                const payload = {
-                    contents: [{ role: "user", parts: [{ text: prompt }] }],
-                    generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { "recipes": { type: "ARRAY", items: { type: "OBJECT", properties: { "recipeName": { "type": "STRING" }, "description": { "type": "STRING" }, "ingredients": { "type": "ARRAY", "items": { "type": "STRING" } }, "method": { "type": "ARRAY", "items": { "type": "STRING" } } }, required: ["recipeName", "description", "ingredients", "method"] } } }, required: ["recipes"] } }
-                };
-
-                try {
-                    const response = await fetchWithBackoff(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                    const result = await response.json();
-                    
-                    if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
-                        const jsonText = result.candidates[0].content.parts[0].text;
-                        const parsedData = JSON.parse(jsonText);
-                        generatedRecipesStore = parsedData.recipes;
-                        renderGeneratedRecipes();
-                    } else {
-                         throw new Error("Invalid response structure from API.");
-                    }
-                } catch (error) {
-                    console.error("Error fetching recipes:", error);
-                    errorMessage.querySelector('span').textContent = "Something went wrong fetching recipes. Please try again later.";
-                    errorMessage.classList.remove('hidden');
-                } finally {
-                    loader.classList.add('hidden');
-                    generateBtn.disabled = false;
-                    generateBtn.textContent = 'Make it Mutti';
-                    validateForm();
+                    showResult();
                 }
             }
 
-            // --- Event Listeners ---
-            productsContainer.addEventListener('click', (e) => {
-                const card = e.target.closest('.product-card');
-                if (card) handleProductSelect(card.dataset.name, card);
-            });
-            addIngredientBtn.addEventListener('click', addIngredient);
-            ingredientInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addIngredient(); } });
-            ingredientTagsContainer.addEventListener('click', (e) => { if (e.target.classList.contains('remove-ingredient-btn')) removeIngredient(parseInt(e.target.dataset.index)); });
-            generateBtn.addEventListener('click', getRecipes);
-            recipeOutput.addEventListener('click', handleCardClick);
-            closeModalBtn.addEventListener('click', hideShoppingList);
-            modal.addEventListener('click', (e) => { if (e.target === modal) hideShoppingList(); });
-            // Saved Recipes Modal Listeners
-            openSavedModalBtn.addEventListener('click', showSavedRecipesModal);
-            closeSavedModalBtn.addEventListener('click', hideSavedRecipesModal);
-            savedRecipesModal.addEventListener('click', (e) => { if (e.target === savedRecipesModal) hideSavedRecipesModal(); });
-            savedRecipesModalOutput.addEventListener('click', handleCardClick);
+            function calculateResult() {
+                const counts = {};
+                userAnswers.forEach(answer => {
+                    counts[answer] = (counts[answer] || 0) + 1;
+                });
 
-            // --- Initial Render ---
-            loadSavedRecipes();
-            renderProducts();
-            renderIngredients();
-            validateForm();
+                // Find the personality with the highest count
+                let result = 'classic'; // Default result
+                let maxCount = 0;
+                for (const personality in counts) {
+                    if (counts[personality] > maxCount) {
+                        maxCount = counts[personality];
+                        result = personality;
+                    }
+                }
+                return result;
+            }
+
+            function showResult() {
+                questionSection.classList.add('hidden');
+                resultSection.classList.remove('hidden');
+                
+                const personalityKey = calculateResult();
+                const result = personalities[personalityKey];
+
+                personalityTitle.textContent = result.title;
+                personalityDescription.textContent = result.description;
+                sauceImage.src = result.image;
+                sauceImage.alt = result.sauce;
+                sauceImage.onerror = () => {
+                    sauceImage.src = 'https://placehold.co/400x400/cccccc/ffffff?text=Image+Not+Found';
+                };
+            }
+
+            // --- Event Listeners ---
+            startBtn.addEventListener('click', startQuiz);
+            restartBtn.addEventListener('click', () => {
+                resultSection.classList.add('hidden');
+                welcomeScreen.classList.remove('hidden');
+            });
         });
     </script>
+
 </body>
 </html>
