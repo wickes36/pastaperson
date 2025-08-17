@@ -12,15 +12,15 @@
         /* Custom styles to match the reference design */
         body {
             font-family: 'Lato', sans-serif;
-            /* Added background image with a dark overlay for text contrast */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1599974579601-245f35de41f2?q=80&w=1974&auto=format&fit=crop');
+            /* Updated background image with a dark overlay for text contrast */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://cdn1.mutti-parma.com/spai/q_glossy+ret_img+to_webp/mutti-parma.com/app/uploads/2025/08/spaghetti-burrata-mutti-1-1-scaled.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed; /* Keeps the background static on scroll */
             color: #333333;
         }
         .content-wrapper {
-             background-color: #fcf9f4; /* Creamy background from reference site */
+            background-color: #fcf9f4; /* Creamy background from reference site */
         }
         .font-display {
             font-family: 'Playfair Display', serif;
@@ -30,9 +30,6 @@
         }
         .mutti-red-bg {
             background-color: #d52b1e;
-        }
-        .mutti-gold-bg {
-            background-color: #f5a623;
         }
         
         /* Main action button style */
@@ -81,7 +78,8 @@
         <div class="content-wrapper rounded-lg shadow-2xl overflow-hidden">
             <!-- Header Section -->
             <header class="text-center p-6 sm:p-8">
-                <img src="https://mutti-recipe.netlify.app/static/media/mutti-logo.b695e708.svg" alt="Mutti Logo" class="mx-auto mb-6 h-20" onerror="this.onerror=null;this.src='https://placehold.co/200x80/e53e3e/ffffff?text=Mutti+Logo';">
+                <!-- Corrected Mutti Logo URL -->
+                <img src="https://mutti-parma.com/app/themes/mutti/dist/images/logo.webp?id=493e55ebd31573f40be8" alt="Mutti Logo" class="mx-auto mb-6 h-20" >
                 <h1 class="text-4xl md:text-5xl font-display mutti-red-text font-bold">What's Your Pasta Personality?</h1>
                 <p class="mt-3 text-lg text-gray-600">Answer 5 simple questions to discover your perfect Mutti pasta sauce match!</p>
             </header>
@@ -93,7 +91,8 @@
                 <div id="welcome-screen" class="text-center fade-in">
                     <h2 class="text-3xl font-display font-bold mb-4">Ready to find your flavor?</h2>
                     <p class="mb-8 text-gray-600">Let's get started and uncover the sauce that's made for you.</p>
-                    <button id="start-btn" class="btn-action mutti-gold-bg text-white">Start Quiz</button>
+                    <!-- Styled button to be red -->
+                    <button id="start-btn" class="btn-action mutti-red-bg text-white">Start Quiz</button>
                 </div>
 
                 <!-- Question Section (Initially Hidden) -->
@@ -120,7 +119,7 @@
 
         <!-- Footer -->
         <footer class="text-center mt-8 text-gray-200 text-sm">
-            <p>&copy; 2024 Mutti S.p.A. All Rights Reserved.</p>
+            <p>&copy; 2025 Mutti S.p.A. All Rights Reserved.</p>
         </footer>
 
     </div>
@@ -140,11 +139,8 @@
             const restartBtn = document.getElementById('restart-btn');
 
             // --- Quiz Data ---
-            // This is where you replace the dummy questions and answers.
-            // Each answer has a 'value' which corresponds to one of the personalities.
             const quizData = [
                 {
-                    // --- Question 1 ---
                     question: "What's your ideal Friday night?",
                     answers: [
                         { text: "A lively dinner party with friends.", value: "classic" },
@@ -154,7 +150,6 @@
                     ]
                 },
                 {
-                    // --- Question 2 ---
                     question: "Pick a vacation destination:",
                     answers: [
                         { text: "A charming Italian village.", value: "classic" },
@@ -164,7 +159,6 @@
                     ]
                 },
                 {
-                    // --- Question 3 ---
                     question: "What's your go-to movie genre?",
                     answers: [
                         { text: "Timeless romance or drama.", value: "classic" },
@@ -174,7 +168,6 @@
                     ]
                 },
                 {
-                    // --- Question 4 ---
                     question: "Choose a color palette:",
                     answers: [
                         { text: "Deep reds, greens, and golds.", value: "classic" },
@@ -184,7 +177,6 @@
                     ]
                 },
                 {
-                    // --- Question 5 ---
                     question: "How do you take your coffee?",
                     answers: [
                         { text: "A traditional, rich espresso.", value: "classic" },
@@ -195,39 +187,37 @@
                 }
             ];
 
-            // --- Personalities Data ---
-            // This is where you define the results. Link them with the 'value' from the answers.
+            // --- Personalities Data with real image URLs ---
             const personalities = {
                 classic: {
                     title: "The Timeless Classic",
                     sauce: "Mutti Classic Basilico",
                     description: "You appreciate tradition, quality, and the simple joys of a perfectly executed dish. Your ideal sauce is rich, comforting, and full of authentic Italian flavor.",
-                    image: "https://placehold.co/400x400/b91c1c/ffffff?text=Basilico"
+                    image: "https://mutti-parma.com/app/uploads/sites/20/2022/10/basil-sauce-1.png"
                 },
                 simple: {
                     title: "The Pure & Simple",
                     sauce: "Mutti Simply Sugo",
                     description: "You believe in the beauty of simplicity. You love fresh, high-quality ingredients that speak for themselves. Your perfect sauce is clean, sweet, and wonderfully straightforward.",
-                    image: "https://placehold.co/400x400/ef4444/ffffff?text=Sugo"
+                    image: "https://mutti-parma.com/app/uploads/sites/20/2022/10/sugo-semplice-1.png"
                 },
                 bold: {
                     title: "The Bold Adventurer",
                     sauce: "Mutti Spicy Arrabbiata",
                     description: "You're not afraid of a little heat and excitement! You love bold flavors that pack a punch and keep things interesting. Your perfect sauce has a fiery kick and a daring personality.",
-                    image: "https://placehold.co/400x400/dc2626/ffffff?text=Arrabbiata"
+                    image: "https://mutti-parma.com/app/uploads/sites/20/2022/10/arrabbiata-sauce-1.png"
                 },
                 vibrant: {
                     title: "The Vibrant Veggie-Lover",
                     sauce: "Mutti Garden Vegetable",
                     description: "You are fresh, energetic, and love food that's bursting with life and color. Your ideal sauce is packed with delicious, sun-ripened vegetables and vibrant flavors.",
-                    image: "https://placehold.co/400x400/f87171/ffffff?text=Vegetable"
+                    image: "https://mutti-parma.com/app/uploads/sites/20/2022/10/vegetable-sauce-1.png"
                 }
             };
 
             let currentQuestionIndex = 0;
             let userAnswers = [];
 
-            // --- Functions ---
             function startQuiz() {
                 welcomeScreen.classList.add('hidden');
                 questionSection.classList.remove('hidden');
@@ -237,25 +227,21 @@
             }
 
             function showQuestion() {
-                // Clear previous question
                 questionContainer.innerHTML = '';
-                
                 const currentQuestion = quizData[currentQuestionIndex];
                 
-                // Create question title
                 const questionTitle = document.createElement('h2');
                 questionTitle.className = 'text-3xl font-display font-bold text-center mb-8';
                 questionTitle.textContent = currentQuestion.question;
                 questionContainer.appendChild(questionTitle);
 
-                // Create answer buttons
                 const answersGrid = document.createElement('div');
                 answersGrid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-4';
                 
                 currentQuestion.answers.forEach(answer => {
                     const button = document.createElement('button');
                     button.className = 'btn-answer p-4 rounded-lg text-left text-lg';
-                    button.textContent = a.text;
+                    button.textContent = answer.text; 
                     button.onclick = () => selectAnswer(answer.value);
                     answersGrid.appendChild(button);
                 });
@@ -267,7 +253,6 @@
             function selectAnswer(value) {
                 userAnswers.push(value);
                 currentQuestionIndex++;
-
                 if (currentQuestionIndex < quizData.length) {
                     showQuestion();
                 } else {
@@ -281,8 +266,7 @@
                     counts[answer] = (counts[answer] || 0) + 1;
                 });
 
-                // Find the personality with the highest count
-                let result = 'classic'; // Default result
+                let result = 'classic';
                 let maxCount = 0;
                 for (const personality in counts) {
                     if (counts[personality] > maxCount) {
@@ -309,7 +293,6 @@
                 };
             }
 
-            // --- Event Listeners ---
             startBtn.addEventListener('click', startQuiz);
             restartBtn.addEventListener('click', () => {
                 resultSection.classList.add('hidden');
