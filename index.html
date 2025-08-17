@@ -546,7 +546,7 @@
                 generateBtn.textContent = 'Thinking of something delicious...';
                 window.scrollTo({ top: resultsSection.offsetTop - 80, behavior: 'smooth' });
 
-                const apiKey = ""; 
+                const apiKey = "AIzaSyCNHrnnVvpGlBTEDC_hwM-PSvuCMVgYi90"; 
 
                 const prompt = `You are an experienced, versatile, and innovative Italian Chef. Create three distinct recipes using Mutti ${selectedProduct} and these ingredients: ${ingredients.join(', ')}. For each recipe, provide a "recipeName", a short "description", a list of "ingredients", and a step-by-step "method". Return a JSON object with a "recipes" key containing an array of the three recipes.`;
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
