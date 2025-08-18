@@ -52,6 +52,7 @@
             background-color: white;
             border: 2px solid #e0e0e0;
             transition: all 0.2s ease-in-out;
+            height: 100%; /* Ensure buttons in the same row are the same height */
         }
         .btn-answer:hover {
             border-color: #d52b1e;
@@ -72,13 +73,13 @@
 <body class="text-gray-800">
 
     <!-- The main container for the page content -->
-    <div class="container mx-auto p-4 sm:p-8 max-w-2xl">
+    <div class="container mx-auto p-4 sm:p-8 max-w-3xl">
         
         <!-- Wrapper for the content with the creamy background -->
         <div class="content-wrapper rounded-lg shadow-2xl overflow-hidden">
             <!-- Header Section -->
             <header class="text-center p-6 sm:p-8">
-                <!-- Corrected Mutti Logo URL -->
+                <!-- Mutti Logo URL -->
                 <img src="https://mutti-parma.com/app/themes/mutti/dist/images/logo.webp?id=493e55ebd31573f40be8" alt="Mutti Logo" class="mx-auto mb-6 h-20" >
                 <h1 class="text-4xl md:text-5xl font-display mutti-red-text font-bold">What's Your Pasta Personality?</h1>
                 <p class="mt-3 text-lg text-gray-600">Answer 5 simple questions to discover your perfect Mutti pasta sauce match!</p>
@@ -138,80 +139,91 @@
             const sauceImage = document.getElementById('sauce-image');
             const restartBtn = document.getElementById('restart-btn');
 
-            // --- Quiz Data ---
+            // --- REFACTORED Quiz Data (5 Personalities) ---
             const quizData = [
                 {
                     question: "What's your ideal Friday night?",
                     answers: [
-                        { text: "A lively dinner party with friends.", value: "classic" },
-                        { text: "A cozy night in with a good book.", value: "simple" },
-                        { text: "Trying a new, adventurous recipe.", value: "bold" },
-                        { text: "Something quick and easy, I'm busy!", value: "vibrant" }
+                        { text: "A timeless dinner party with close friends.", value: "classic" },
+                        { text: "A cozy movie night on the sofa with comfort food.", value: "cheesy" },
+                        { text: "Hitting a new, spicy restaurant everyone's talking about.", value: "bold" },
+                        { text: "Chic cocktails at a stylish, low-key bar.", value: "olive" },
+                        { text: "Improvising a feast with whatever's in the kitchen.", value: "garlic" }
                     ]
                 },
                 {
                     question: "Pick a vacation destination:",
                     answers: [
-                        { text: "A charming Italian village.", value: "classic" },
-                        { text: "A peaceful countryside retreat.", value: "simple" },
-                        { text: "A bustling city with spicy food.", value: "bold" },
-                        { text: "A sunny beach with fresh seafood.", value: "vibrant" }
+                        { text: "A beautiful, historic city like Rome or Florence.", value: "classic" },
+                        { text: "A fun-filled theme park or a family beach resort.", value: "cheesy" },
+                        { text: "Exploring a vibrant, chaotic market in Southeast Asia.", value: "bold" },
+                        { text: "A relaxing, stylish getaway to the Mediterranean coast.", value: "olive" },
+                        { text: "A road trip with no set destination.", value: "garlic" }
                     ]
                 },
                 {
                     question: "What's your go-to movie genre?",
                     answers: [
-                        { text: "Timeless romance or drama.", value: "classic" },
-                        { text: "Heartwarming family comedies.", value: "simple" },
-                        { text: "Action-packed thriller.", value: "bold" },
-                        { text: "A bright and cheerful musical.", value: "vibrant" }
+                        { text: "An award-winning classic drama.", value: "classic" },
+                        { text: "A hilarious, feel-good comedy.", value: "cheesy" },
+                        { text: "An intense, action-packed thriller.", value: "bold" },
+                        { text: "A clever, indie film with a sharp script.", value: "olive" },
+                        { text: "A cult classic that breaks all the rules.", value: "garlic" }
                     ]
                 },
                 {
-                    question: "Choose a color palette:",
+                    question: "Choose a kitchen utensil:",
                     answers: [
-                        { text: "Deep reds, greens, and golds.", value: "classic" },
-                        { text: "Soft creams, and gentle pastels.", value: "simple" },
-                        { text: "Rich oranges, and fiery reds.", value: "bold" },
-                        { text: "Bright yellows, and ocean blues.", value: "vibrant" }
+                        { text: "A perfectly balanced chef's knife.", value: "classic" },
+                        { text: "A cheese grater. Obviously.", value: "cheesy" },
+                        { text: "A mortar and pestle for grinding spices.", value: "bold" },
+                        { text: "An elegant serving platter.", value: "olive" },
+                        { text: "A garlic press... or five.", value: "garlic" }
                     ]
                 },
                 {
-                    question: "How do you take your coffee?",
+                    question: "How do you approach a recipe?",
                     answers: [
-                        { text: "A traditional, rich espresso.", value: "classic" },
-                        { text: "Simple, black coffee.", value: "simple" },
-                        { text: "A double-shot with a dash of spice.", value: "bold" },
-                        { text: "A sweet latte with lots of foam.", value: "vibrant" }
+                        { text: "Follow it to the letter for perfect results.", value: "classic" },
+                        { text: "Follow it, but add extra cheese at every opportunity.", value: "cheesy" },
+                        { text: "Double the chili, at least.", value: "bold" },
+                        { text: "Use it as inspiration, but give it my own sophisticated twist.", value: "olive" },
+                        { text: "A recipe is just a vague suggestion, right?", value: "garlic" }
                     ]
                 }
             ];
 
-            // --- Personalities Data with real image URLs ---
+            // --- REFACTORED Personalities Data (5 Personalities) ---
             const personalities = {
                 classic: {
-                    title: "The Timeless Classic",
+                    title: "The Classic Basil",
                     sauce: "Mutti Classic Basilico",
-                    description: "You appreciate tradition, quality, and the simple joys of a perfectly executed dish. Your ideal sauce is rich, comforting, and full of authentic Italian flavor.",
-                    image: "https://mutti-parma.com/app/uploads/sites/20/2022/10/basil-sauce-1.png"
+                    description: "You're smooth, reliable and know that less is more - a true keeper.",
+                    image: "images/basil.jpg"
                 },
-                simple: {
-                    title: "The Pure & Simple",
-                    sauce: "Mutti Simply Sugo",
-                    description: "You believe in the beauty of simplicity. You love fresh, high-quality ingredients that speak for themselves. Your perfect sauce is clean, sweet, and wonderfully straightforward.",
-                    image: "https://mutti-parma.com/app/uploads/sites/20/2022/10/sugo-semplice-1.png"
+                cheesy: {
+                    title: "The Forever Cheesy",
+                    sauce: "Mutti Parmigiano Reggiano",
+                    description: "You like your food like you like your jokes - comforting, a bit indulgent, and loved by everyone.",
+                    image: "images/cheese.jpg"
                 },
                 bold: {
-                    title: "The Bold Adventurer",
+                    title: "The Bold Arrabbiata",
                     sauce: "Mutti Spicy Arrabbiata",
-                    description: "You're not afraid of a little heat and excitement! You love bold flavors that pack a punch and keep things interesting. Your perfect sauce has a fiery kick and a daring personality.",
-                    image: "https://mutti-parma.com/app/uploads/sites/20/2022/10/arrabbiata-sauce-1.png"
+                    description: "You bring the fire. You thrive on flavour drama and like a little chaos in the kitchen.",
+                    image: "images/chilli.jpg"
                 },
-                vibrant: {
-                    title: "The Vibrant Veggie-Lover",
-                    sauce: "Mutti Garden Vegetable",
-                    description: "You are fresh, energetic, and love food that's bursting with life and color. Your ideal sauce is packed with delicious, sun-ripened vegetables and vibrant flavors.",
-                    image: "https://mutti-parma.com/app/uploads/sites/20/2022/10/vegetable-sauce-1.png"
+                olive: {
+                    title: "The Unshakably Cool Olive",
+                    sauce: "Mutti Olive",
+                    description: "Slightly salty, effortlessly stylish, and always the most underrated one at the table.",
+                    image: "images/olive.jpg"
+                },
+                garlic: {
+                    title: "The Go-Your-Own-Way Garlic",
+                    sauce: "Mutti Simply Sugo",
+                    description: "You trust your gut (and your cravings). Rules aren't really your thing. Recipe says two cloves? You're chucking in the whole bulb.",
+                    image: "images/garlic.jpg"
                 }
             };
 
@@ -220,6 +232,7 @@
 
             function startQuiz() {
                 welcomeScreen.classList.add('hidden');
+                resultSection.classList.add('hidden');
                 questionSection.classList.remove('hidden');
                 currentQuestionIndex = 0;
                 userAnswers = [];
@@ -235,22 +248,84 @@
                 questionTitle.textContent = currentQuestion.question;
                 questionContainer.appendChild(questionTitle);
 
+                // Use a flexible grid that adapts to the number of answers
                 const answersGrid = document.createElement('div');
-                answersGrid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-4';
+                answersGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
                 
-                currentQuestion.answers.forEach(answer => {
-                    const button = document.createElement('button');
-                    button.className = 'btn-answer p-4 rounded-lg text-left text-lg';
-                    button.textContent = answer.text; 
-                    button.onclick = () => selectAnswer(answer.value);
-                    answersGrid.appendChild(button);
-                });
+                // Special case for 5 answers, to make it look better
+                if (currentQuestion.answers.length === 5) {
+                     answersGrid.innerHTML = `
+                        <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="sm:col-span-1"></div>
+                            <button class="btn-answer p-4 rounded-lg text-lg" onclick="selectAnswer('${currentQuestion.answers[0].value}')">${currentQuestion.answers[0].text}</button>
+                            <div class="sm:col-span-1"></div>
+                        </div>
+                        <button class="btn-answer p-4 rounded-lg text-lg" onclick="selectAnswer('${currentQuestion.answers[1].value}')">${currentQuestion.answers[1].text}</button>
+                        <button class="btn-answer p-4 rounded-lg text-lg" onclick="selectAnswer('${currentQuestion.answers[2].value}')">${currentQuestion.answers[2].text}</button>
+                        <button class="btn-answer p-4 rounded-lg text-lg" onclick="selectAnswer('${currentQuestion.answers[3].value}')">${currentQuestion.answers[3].text}</button>
+                        <button class="btn-answer p-4 rounded-lg text-lg" onclick="selectAnswer('${currentQuestion.answers[4].value}')">${currentQuestion.answers[4].text}</button>
+                    `;
+                     // A bit of a hack to make the 5-button layout work.
+                     // We need to re-arrange the buttons for a 3-2 layout.
+                    const buttons = [
+                        { text: currentQuestion.answers[0].text, value: currentQuestion.answers[0].value },
+                        { text: currentQuestion.answers[1].text, value: currentQuestion.answers[1].value },
+                        { text: currentQuestion.answers[2].text, value: currentQuestion.answers[2].value },
+                        { text: currentQuestion.answers[3].text, value: currentQuestion.answers[3].value },
+                        { text: currentQuestion.answers[4].text, value: currentQuestion.answers[4].value }
+                    ];
+                    answersGrid.innerHTML = ''; // Clear previous content
+                    answersGrid.className = 'grid grid-cols-1 sm:grid-cols-6 gap-4';
+
+                    // Create 3 buttons in the first row
+                    buttons.slice(0, 3).forEach(answer => {
+                        const buttonWrapper = document.createElement('div');
+                        buttonWrapper.className = 'sm:col-span-2';
+                        const button = document.createElement('button');
+                        button.className = 'btn-answer p-4 rounded-lg text-lg w-full';
+                        button.textContent = answer.text;
+                        button.onclick = () => selectAnswer(answer.value);
+                        buttonWrapper.appendChild(button);
+                        answersGrid.appendChild(buttonWrapper);
+                    });
+
+                    // Create 2 buttons in the second row, centered
+                    const spacer1 = document.createElement('div');
+                    spacer1.className = 'hidden sm:block sm:col-span-1';
+                    answersGrid.appendChild(spacer1);
+
+                    buttons.slice(3, 5).forEach(answer => {
+                        const buttonWrapper = document.createElement('div');
+                        buttonWrapper.className = 'sm:col-span-2';
+                        const button = document.createElement('button');
+                        button.className = 'btn-answer p-4 rounded-lg text-lg w-full';
+                        button.textContent = answer.text;
+                        button.onclick = () => selectAnswer(answer.value);
+                        buttonWrapper.appendChild(button);
+                        answersGrid.appendChild(buttonWrapper);
+                    });
+                     const spacer2 = document.createElement('div');
+                    spacer2.className = 'hidden sm:block sm:col-span-1';
+                    answersGrid.appendChild(spacer2);
+
+
+                } else { // Fallback for other numbers of answers
+                    currentQuestion.answers.forEach(answer => {
+                        const button = document.createElement('button');
+                        button.className = 'btn-answer p-4 rounded-lg text-lg';
+                        button.textContent = answer.text;
+                        button.onclick = () => selectAnswer(answer.value);
+                        answersGrid.appendChild(button);
+                    });
+                }
+
 
                 questionContainer.appendChild(answersGrid);
                 progressText.textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
             }
 
-            function selectAnswer(value) {
+            // Make selectAnswer globally accessible for the inline onclick handlers
+            window.selectAnswer = function(value) {
                 userAnswers.push(value);
                 currentQuestionIndex++;
                 if (currentQuestionIndex < quizData.length) {
@@ -266,7 +341,8 @@
                     counts[answer] = (counts[answer] || 0) + 1;
                 });
 
-                let result = 'classic';
+                // Find the personality with the highest score
+                let result = 'classic'; // Default result
                 let maxCount = 0;
                 for (const personality in counts) {
                     if (counts[personality] > maxCount) {
@@ -289,10 +365,12 @@
                 sauceImage.src = result.image;
                 sauceImage.alt = result.sauce;
                 sauceImage.onerror = () => {
-                    sauceImage.src = 'https://placehold.co/400x400/cccccc/ffffff?text=Image+Not+Found';
+                    // Fallback placeholder image
+                    sauceImage.src = 'https://placehold.co/400x400/d52b1e/ffffff?text=Mutti';
                 };
             }
 
+            // --- Event Listeners ---
             startBtn.addEventListener('click', startQuiz);
             restartBtn.addEventListener('click', () => {
                 resultSection.classList.add('hidden');
